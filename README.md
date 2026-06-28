@@ -36,6 +36,15 @@ For the real networked app at `/app`, you will need a Supabase project: run [`su
 - [ ] The social side: profiles, posts, a feed, follows
 - [ ] Group chats, media, a mobile app
 
+## Honest limitations
+
+This is early, and I would rather be upfront than oversell it:
+
+- Keys live in your browser's storage, so this is as safe as the device it runs on.
+- There is no forward secrecy yet. If a private key leaks, past messages for that key can be read. A future version will add a ratchet.
+- You verify you are talking to the right person by comparing the key fingerprint shown in the chat header. There is no automatic protection against a malicious server swapping a key.
+- One device per account for now. Logging in somewhere new makes a fresh key.
+
 ## Built with
 
 Next.js, React, Tailwind, the Web Crypto API, and Supabase.
