@@ -12,7 +12,7 @@ type Shown = { id: string; mine: boolean; text: string; at: string };
 export default function App() {
   const [ready, setReady] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [email, setEmail] = useState(""); const [sent, setSent] = useState(false);
+  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [authErr, setAuthErr] = useState("");
   const [me, setMe] = useState<Profile | null>(null);
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [needHandle, setNeedHandle] = useState(false); const [handle, setHandle] = useState("");
@@ -123,10 +123,18 @@ export default function App() {
   }
   useEffect(() => { if (shown.length) endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [shown]);
 
-  async function signIn() {
-    if (!supabase || !email.trim()) return;
-    await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: typeof window !== "undefined" ? `${location.origin}/app` : undefined } });
-    setSent(true);
+  async function logIn() {
+    if (!supabase || !email.trim() || !password) return;
+    setAuthErr("");
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) setAuthErr(error.message);
+  }
+  async function signUp() {
+    if (!supabase || !email.trim() || !password) { setAuthErr("email and password chahiye"); return; }
+    if (password.length < 6) { setAuthErr("password kam se kam 6 characters ka rakh"); return; }
+    setAuthErr("");
+    const { error } = await supabase.auth.signUp({ email: email.trim(), password });
+    if (error) setAuthErr(error.message);
   }
   async function signOut() { await supabase?.auth.signOut(); setMe(null); setPeer(null); }
 
@@ -139,14 +147,18 @@ export default function App() {
       <div className="max-w-[360px] mx-auto text-center">
         <Lock className="mx-auto text-accent mb-4" />
         <h1 className="text-[22px] font-bold mb-2">Welcome to Wisp</h1>
-        <p className="text-muted text-[14px] mb-6">Drop your email and we send you a link to get in. No password to remember.</p>
-        {sent ? <p className="text-good text-[14px]">Check your inbox for the link.</p> : (
-          <div className="flex gap-2">
-            <input value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && signIn()} placeholder="you@email.com"
-              className="flex-1 bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
-            <button onClick={signIn} className="bg-accent text-bg font-medium px-4 rounded-[10px] text-[14px]">send</button>
+        <p className="text-muted text-[14px] mb-6">Make an account or log back in. It only lives on your devices.</p>
+        <div className="grid gap-2.5">
+          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" autoComplete="email"
+            className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
+          <input value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && logIn()} type="password" placeholder="password" autoComplete="current-password"
+            className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
+          <div className="flex gap-2 mt-1">
+            <button onClick={logIn} className="flex-1 bg-accent text-bg font-medium py-2.5 rounded-[10px] text-[14px]">Log in</button>
+            <button onClick={signUp} className="flex-1 border border-line py-2.5 rounded-[10px] text-[14px] hover:border-ink transition">Sign up</button>
           </div>
-        )}
+          {authErr && <p className="text-[13px] text-[#e0667f] mt-1">{authErr}</p>}
+        </div>
       </div>
     </Shell>
   );
