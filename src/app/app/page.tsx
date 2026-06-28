@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { ensureIdentity } from "@/lib/keys";
 import { seal, open as openMsg, fingerprint, type Identity, type Jwk } from "@/lib/crypto";
-import { Lock, Send, LogOut, Search, Shield, RotateCw } from "lucide-react";
+import { Lock, Send, LogOut, Search, Shield, RotateCw, ChevronLeft } from "lucide-react";
 
 type Profile = { id: string; handle: string; display_name: string | null; public_key: Jwk };
 type Row = { id: string; sender_id: string; iv: string; ciphertext: string; created_at: string };
@@ -192,7 +192,7 @@ export default function App() {
   );
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-[100dvh] flex flex-col">
       <header className="flex items-center justify-between px-5 py-3 border-b border-line">
         <span className="font-bold flex items-center gap-2"><span className="w-6 h-6 rounded-md bg-accent/20 grid place-items-center"><Lock size={13} className="text-accent" /></span>wisp</span>
         <div className="flex items-center gap-3 text-[13px] text-muted">
@@ -202,7 +202,7 @@ export default function App() {
       </header>
       <div className="flex-1 flex min-h-0">
         {/* directory */}
-        <aside className="w-[280px] border-r border-line flex flex-col">
+        <aside className={`${peer ? "hidden" : "flex"} md:flex w-full md:w-[280px] border-r border-line flex-col`}>
           <div className="p-3 border-b border-line flex items-center gap-2 bg-surf">
             <Search size={14} className="text-faint" />
             <input value={q} onChange={e => setQ(e.target.value)} placeholder="find people" className="bg-transparent text-[13.5px] outline-none flex-1 min-w-0" />
@@ -220,12 +220,13 @@ export default function App() {
           </div>
         </aside>
         {/* chat */}
-        <section className="flex-1 flex flex-col min-w-0">
+        <section className={`${peer ? "flex" : "hidden"} md:flex flex-1 flex-col min-w-0`}>
           {!peer ? (
             <div className="m-auto text-center text-faint text-[14px] px-6"><Shield className="mx-auto mb-3 opacity-50" />Pick someone on the left and say hi. It is encrypted the second you hit send.</div>
           ) : (
             <>
               <div className="px-5 py-3 border-b border-line flex items-center gap-3">
+                <button onClick={() => setPeer(null)} aria-label="back" className="md:hidden text-muted hover:text-ink transition -ml-1"><ChevronLeft size={20} /></button>
                 <Avatar handle={peer.handle} />
                 <div className="min-w-0">
                   <div className="font-semibold leading-tight">@{peer.handle}</div>
