@@ -1,4 +1,4 @@
-﻿import Messenger from "@/components/Messenger";
+import Messenger from "@/components/Messenger";
 import { Lock, Github, KeyRound, ServerOff } from "lucide-react";
 
 export default function Home() {
@@ -10,10 +10,10 @@ export default function Home() {
             <span className="w-6 h-6 rounded-md bg-accent/20 grid place-items-center"><Lock size={13} className="text-accent" /></span>
             wisp
           </span>
-          <a href="https://github.com/arshnah" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-[13.5px] text-muted hover:text-ink transition">
-            <Github size={16} /> source
-          </a>
+          <div className="flex items-center gap-4">
+            <a href="/app" className="text-[13.5px] bg-accent text-bg font-medium px-3.5 py-1.5 rounded-lg hover:brightness-110 transition">open app</a>
+            <a href="https://github.com/arshnah" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[13.5px] text-muted hover:text-ink transition"><Github size={16} /> source</a>
+          </div>
         </nav>
 
         <header className="pt-[60px] pb-[50px] text-center">

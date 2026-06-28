@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { generateIdentity, seal, open, fingerprint, type Identity, type Sealed } from "@/lib/crypto";
 import { Shield, Eye, EyeOff, Send, Lock } from "lucide-react";
@@ -14,7 +14,7 @@ export default function Messenger() {
   const [speaker, setSpeaker] = useState<"me" | "aria">("me");
   const [peek, setPeek] = useState(false);
   const [ready, setReady] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const threadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -24,7 +24,7 @@ export default function Messenger() {
       setReady(true);
     })();
   }, []);
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
+  useEffect(() => { if (msgs.length) threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" }); }, [msgs]);
 
   async function send() {
     if (!draft.trim() || !me || !aria) return;
@@ -62,7 +62,7 @@ export default function Messenger() {
       </div>
 
       {/* thread */}
-      <div className="h-[360px] overflow-y-auto px-5 py-4 flex flex-col gap-2.5">
+      <div ref={threadRef} className="h-[360px] overflow-y-auto px-5 py-4 flex flex-col gap-2.5">
         {msgs.length === 0 && (
           <div className="m-auto text-center text-faint text-[13px] max-w-[42ch] leading-relaxed">
             Type a message below. It gets encrypted on this device before it would ever touch a server.
@@ -82,7 +82,6 @@ export default function Messenger() {
             </div>
           );
         })}
-        <div ref={endRef} />
       </div>
 
       {/* composer */}
