@@ -1,45 +1,45 @@
-﻿# wisp
+# wisp
 
-An open-source social messenger with **end-to-end encryption** built in from the first commit. Keys are generated on your device and never leave it. The server stores ciphertext and learns nothing.
+A messenger that is private because of how it is built, not because you flipped a setting. Your keys are made on your device and stay there. Every message is encrypted before it leaves, so the server only ever holds scrambled text it cannot read. It is open source, so you can check all of that yourself.
 
-> Status: early. The encryption core and a local demo work today. Networked messaging and the social layer are on the roadmap below.
+> Heads up: this is early. The encryption and a working messenger are live. The wider social side is still on the list below.
 
-## Why
+## Why I built this
 
-Most "private" chat apps ask you to trust their servers. Wisp is built so you don't have to. The math guarantees it: a passive server, or anyone on the wire, only ever sees ciphertext.
+Most apps that call themselves private are asking you to trust their servers. I did not want to build another one of those. With Wisp the math does the trusting for you. A server that gets breached, or anyone watching the wire, only ever sees gibberish.
 
-## How the encryption works
+## How the encryption actually works
 
-1. Every user generates an **ECDH (P-256)** identity keypair in the browser. The private key never leaves the device.
-2. Only **public keys** are shared.
-3. To message someone, both sides derive the **same shared secret** from `(my private key + their public key)` using ECDH. The secret itself is never transmitted.
-4. That secret becomes an **AES-GCM** key, which gives confidentiality and tamper-detection.
-5. Every message uses a fresh random IV. The server stores `{ iv, ciphertext }`.
+1. When you sign up, your browser makes an ECDH (P-256) keypair. The private key never leaves your device.
+2. The only thing that gets shared is your public key.
+3. When two people chat, each side mixes their own private key with the other person's public key and lands on the exact same shared secret. That secret is never sent anywhere.
+4. The shared secret becomes an AES-GCM key, which keeps messages secret and also catches tampering.
+5. Every message gets a fresh random IV. The server stores `{ iv, ciphertext }` and nothing else.
 
-The whole core is ~85 lines of dependency-free code in [`src/lib/crypto.ts`](src/lib/crypto.ts), using only the native Web Crypto API. Read it. That's the point.
+The whole thing is about 85 lines with no dependencies, in [`src/lib/crypto.ts`](src/lib/crypto.ts), using the browser's built-in Web Crypto. Go read it. That is kind of the point.
 
-## Run it
+## Run it locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The demo generates two identities and lets you send encrypted messages between them. Hit **peek** to see what a server would actually store.
+Open http://localhost:3000. The homepage has a live demo with two identities you can message between. Hit **peek** to see what a server would actually store.
 
-## Roadmap
+For the real networked app at `/app`, you will need a Supabase project: run [`supabase/schema.sql`](supabase/schema.sql) in the SQL editor and put your URL and anon key in `.env.local`.
 
-- [x] **Phase 1** — E2E encryption core + local demo
-- [ ] **Phase 2** — Supabase auth, a public-key directory, realtime 1:1 messaging over the network
-- [ ] **Phase 3** — Social layer: profiles, posts, a feed, follows
-- [ ] **Phase 4** — Group chats, media, a mobile client
+## Where this is going
 
-The Phase 2 database schema is already in [`supabase/schema.sql`](supabase/schema.sql).
+- [x] Encryption core and a local demo
+- [x] Real accounts, a key directory, and live 1:1 messaging
+- [ ] The social side: profiles, posts, a feed, follows
+- [ ] Group chats, media, a mobile app
 
-## Stack
+## Built with
 
-Next.js · React · Tailwind · Web Crypto API · Supabase (Phase 2+)
+Next.js, React, Tailwind, the Web Crypto API, and Supabase.
 
 ## License
 
-MIT
+MIT. Do what you want with it. Pull requests welcome.

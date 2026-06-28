@@ -138,8 +138,8 @@ export default function App() {
     <Shell>
       <div className="max-w-[360px] mx-auto text-center">
         <Lock className="mx-auto text-accent mb-4" />
-        <h1 className="text-[22px] font-bold mb-2">Sign in to Wisp</h1>
-        <p className="text-muted text-[14px] mb-6">We email you a magic link. No passwords.</p>
+        <h1 className="text-[22px] font-bold mb-2">Welcome to Wisp</h1>
+        <p className="text-muted text-[14px] mb-6">Drop your email and we send you a link to get in. No password to remember.</p>
         {sent ? <p className="text-good text-[14px]">Check your inbox for the link.</p> : (
           <div className="flex gap-2">
             <input value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && signIn()} placeholder="you@email.com"
@@ -155,7 +155,7 @@ export default function App() {
     <Shell>
       <div className="max-w-[360px] mx-auto text-center">
         <h1 className="text-[22px] font-bold mb-2">Pick a handle</h1>
-        <p className="text-muted text-[14px] mb-6">This is how people find you. Lowercase, letters and numbers.</p>
+        <p className="text-muted text-[14px] mb-6">This is the name people use to find you. Lowercase letters and numbers, keep it short.</p>
         <div className="flex gap-2">
           <input value={handle} onChange={e => setHandle(e.target.value)} onKeyDown={e => e.key === "Enter" && claimHandle()} placeholder="yourhandle"
             className="flex-1 bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
@@ -188,13 +188,13 @@ export default function App() {
                 <div className="text-[14px] font-medium">@{p.handle}</div>
               </button>
             ))}
-            {people.length === 0 && <p className="text-faint text-[12.5px] p-4">No one else yet. Invite a friend to sign up.</p>}
+            {people.length === 0 && <p className="text-faint text-[12.5px] p-4">Pretty quiet in here. Get a friend to sign up and they will show up.</p>}
           </div>
         </aside>
         {/* chat */}
         <section className="flex-1 flex flex-col min-w-0">
           {!peer ? (
-            <div className="m-auto text-center text-faint text-[14px]"><Shield className="mx-auto mb-3 opacity-50" />Pick someone to start an encrypted chat.</div>
+            <div className="m-auto text-center text-faint text-[14px]"><Shield className="mx-auto mb-3 opacity-50" />Pick someone on the left and say hi. It is encrypted the second you hit send.</div>
           ) : (
             <>
               <div className="px-5 py-3 border-b border-line"><span className="font-semibold">@{peer.handle}</span><span className="ml-2 font-mono text-[11px] text-faint inline-flex items-center gap-1"><Lock size={9} /> e2e</span></div>

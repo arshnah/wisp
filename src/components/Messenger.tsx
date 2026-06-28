@@ -65,8 +65,8 @@ export default function Messenger() {
       <div ref={threadRef} className="h-[360px] overflow-y-auto px-5 py-4 flex flex-col gap-2.5">
         {msgs.length === 0 && (
           <div className="m-auto text-center text-faint text-[13px] max-w-[42ch] leading-relaxed">
-            Type a message below. It gets encrypted on this device before it would ever touch a server.
-            Hit <span className="text-warn font-mono">peek</span> to see exactly what a server would store: nothing readable.
+            Send a message. It gets locked on this device before it would ever reach a server.
+            Hit <span className="text-warn font-mono">peek</span> to see what the server actually stores. Spoiler: nothing you can read.
           </div>
         )}
         {msgs.map((m, i) => {

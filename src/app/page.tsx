@@ -24,23 +24,24 @@ export default function Home() {
             Messages only you and them can read.
           </h1>
           <p className="mt-6 max-w-[58ch] mx-auto text-[18px] text-muted leading-[1.6]">
-            Wisp is an open-source social messenger with end-to-end encryption built in from the first commit.
-            Keys are made on your device and never leave it. The server stores ciphertext and learns nothing.
+            A messenger that is private by default, not as a setting you have to find. Your keys are made on your
+            device and stay there. Everything you send is locked before it leaves, so the server only ever holds
+            scrambled text it cannot read. It is open source, so you do not have to take my word for any of this.
           </p>
         </header>
 
         <section className="pb-[40px]">
           <Messenger />
           <p className="text-center text-faint text-[12.5px] mt-4 font-mono">
-            this demo runs entirely in your browser · two identities, real ECDH + AES-GCM
+            all of this runs in your browser. two identities, real keys, real encryption. nothing is faked.
           </p>
         </section>
 
         <section className="py-[60px] grid sm:grid-cols-3 gap-4">
           {[
-            { icon: KeyRound, t: "Keys stay with you", d: "An ECDH keypair is generated on your device. The private half never touches the network." },
-            { icon: ServerOff, t: "The server is blind", d: "Messages are encrypted before they leave. A breach leaks ciphertext, not conversations." },
-            { icon: Lock, t: "Verifiable", d: "Read the code, compare key fingerprints with a friend, confirm there is no one in the middle." },
+            { icon: KeyRound, t: "Your keys, your device", d: "A keypair is made right here in your browser. The private half never gets sent anywhere, not even to me." },
+            { icon: ServerOff, t: "The server cannot read you", d: "Messages are locked before they leave your device. If the database ever leaks, all anyone gets is gibberish." },
+            { icon: Lock, t: "Check it yourself", d: "Read the code. Compare key fingerprints with the person you are talking to. Trust the math, not me." },
           ].map((f, i) => (
             <div key={i} className="p-5 rounded-[14px] border border-line bg-surf">
               <f.icon size={18} className="text-accent mb-3" />
@@ -51,7 +52,7 @@ export default function Home() {
         </section>
 
         <footer className="py-10 border-t border-line text-center text-[13px] text-faint">
-          built by <a href="https://arshnah.vercel.app" className="text-muted hover:text-ink transition">Arshdeep Singh</a> · MIT licensed · contributions welcome
+          made by <a href="https://arshnah.vercel.app" className="text-muted hover:text-ink transition">Arshdeep Singh</a> · MIT · pull requests welcome
         </footer>
       </div>
     </main>
