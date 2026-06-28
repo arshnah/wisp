@@ -13,6 +13,7 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [authErr, setAuthErr] = useState("");
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [me, setMe] = useState<Profile | null>(null);
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [needHandle, setNeedHandle] = useState(false); const [handle, setHandle] = useState("");
@@ -130,8 +131,8 @@ export default function App() {
     if (error) setAuthErr(error.message);
   }
   async function signUp() {
-    if (!supabase || !email.trim() || !password) { setAuthErr("email and password chahiye"); return; }
-    if (password.length < 6) { setAuthErr("password kam se kam 6 characters ka rakh"); return; }
+    if (!supabase || !email.trim() || !password) { setAuthErr("Enter an email and a password."); return; }
+    if (password.length < 6) { setAuthErr("Your password needs at least 6 characters."); return; }
     setAuthErr("");
     const { error } = await supabase.auth.signUp({ email: email.trim(), password });
     if (error) setAuthErr(error.message);
@@ -142,26 +143,38 @@ export default function App() {
   if (!ready) return <Shell><p className="text-muted">loading…</p></Shell>;
   if (!supabase) return <Shell><Configure /></Shell>;
 
-  if (!userId) return (
-    <Shell>
-      <div className="max-w-[360px] mx-auto text-center">
-        <Lock className="mx-auto text-accent mb-4" />
-        <h1 className="text-[22px] font-bold mb-2">Welcome to Wisp</h1>
-        <p className="text-muted text-[14px] mb-6">Make an account or log back in. It only lives on your devices.</p>
-        <div className="grid gap-2.5">
-          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" autoComplete="email"
-            className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
-          <input value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && logIn()} type="password" placeholder="password" autoComplete="current-password"
-            className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
-          <div className="flex gap-2 mt-1">
-            <button onClick={logIn} className="flex-1 bg-accent text-bg font-medium py-2.5 rounded-[10px] text-[14px]">Log in</button>
-            <button onClick={signUp} className="flex-1 border border-line py-2.5 rounded-[10px] text-[14px] hover:border-ink transition">Sign up</button>
+  if (!userId) {
+    const isSignup = mode === "signup";
+    const submit = () => (isSignup ? signUp() : logIn());
+    const swap = () => { setMode(isSignup ? "login" : "signup"); setAuthErr(""); };
+    return (
+      <Shell>
+        <div className="max-w-[360px] mx-auto text-center">
+          <Lock className="mx-auto text-accent mb-4" />
+          <h1 className="text-[22px] font-bold mb-2">{isSignup ? "Create your account" : "Welcome back"}</h1>
+          <p className="text-muted text-[14px] mb-6">
+            {isSignup
+              ? "One account, private from the very first message. It only takes a few seconds."
+              : "Log in and pick up right where you left off."}
+          </p>
+          <div className="grid gap-2.5">
+            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" autoComplete="email"
+              className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
+            <input value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} type="password"
+              placeholder={isSignup ? "choose a password" : "password"} autoComplete={isSignup ? "new-password" : "current-password"}
+              className="bg-surf border border-line rounded-[10px] px-3.5 py-2.5 text-[14px] outline-none focus:border-accent" />
+            <button onClick={submit} className="bg-accent text-bg font-medium py-2.5 rounded-[10px] text-[14px] mt-1 hover:brightness-110 transition">
+              {isSignup ? "Create account" : "Log in"}
+            </button>
+            {authErr && <p className="text-[13px] text-[#e0667f] mt-1">{authErr}</p>}
           </div>
-          {authErr && <p className="text-[13px] text-[#e0667f] mt-1">{authErr}</p>}
+          <button onClick={swap} className="mt-6 text-[13px] text-muted hover:text-ink transition">
+            {isSignup ? "Already have an account? Log in" : "New here? Create an account"}
+          </button>
         </div>
-      </div>
-    </Shell>
-  );
+      </Shell>
+    );
+  }
 
   if (needHandle) return (
     <Shell>
